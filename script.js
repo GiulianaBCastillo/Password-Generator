@@ -1,9 +1,15 @@
-const characterAmountRange = document.getElementByID ('characterAmountRange')
-const characterAmountNumber = document.getElementByID ('characterAmountNumber')
+const characterAmountRange = document.getElementById ('characterAmountRange')
+const characterAmountNumber = document.getElementById ('characterAmountNumber')
 const includeUppercaseElement = document.getElementById ('includeUppercase')
 const includeNumbersElement = document.getElementById ('includeNumbers')
 const includeSymbolsElement = document.getElementById ('includeSymbols')
 const form = document.getElementById('passwordGeneratorForm')
+const passwordDisplay = document.getElementById('passwordDisplay')
+
+const LowercaseCharCodes = arrayFromLowToHigh(97, 122)
+const UppercaseCharCodes = arrayFromLowToHigh(65, 90)
+const NumberCharCodes = arrayFromLowToHigh(48, 57)
+const SymbolCharCodes = arrayFromLowToHigh(33, 47).concat(arrayFromLowToHigh(58, 64)).concat(arrayFromLowToHigh(91, 96)).concat(arrayFromLowToHigh(123, 126))
 
 characterAmountNumber.addEventListener('input', syncCharacterAmount)
 characterAmountRange.addEventListener('input', syncCharacterAmount)
@@ -15,14 +21,31 @@ form.addEventListener('submit', e=> {
     const includeNumbers = includeNumbersElement.checked
     const includeSymbols = includeSymbolsElement.checked
     const password = generatePassword(characterAmount, includeUppercase, includeNumbers, includeSymbols)
+    passwordDisplay.innerText = password
 })
 
 function generatePassword (characterAmount, includeUppercaseElement, includeNumbers, includeSymbols) {
-    String.fromCharCode()
+   let charCodes = LowercaseCharCodes
+   if (includeUppercase) charCodes = charCodes.concat (UppercaseCharCodes)
+   if (includeSymbols) charCodes = charCodes.concat (SymbolCharCodes)
+   if (includeNumbers) charCodes = charCodes.concat (NumberCharCodes)
+
+   const passwordCharacters = []
+   for (let i = 0; i < characterAmount; i++) {
+    const characterCode = charCodes[Math.floor(Math.random() * charCodes.length)]
+    passwordCharacters.push(String.fromCharCode(characterCode))
+
+    return passwordCharacters.join('')
+   }
+
 }
 
 function arrayFromLowToHigh(low, high) {
-    for (let i = low; i <= high; i++ )
+    const array = []
+    for (let i = low; i <= high; i++ ) {
+        array.push(i)
+    }
+    return array
 }
 function syncCharacterAmount(e) {
     const value = e.target.value
